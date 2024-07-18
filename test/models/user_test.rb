@@ -3,7 +3,7 @@ require "test_helper"
 class UserTest < ActiveSupport::TestCase
 
   def setup 
-    @user = User.new(email: "mark@gmail.com", name: "mark")
+    @user = User.new(email: "user@example.com", name: "mark", password: "foobar", password_confirmation:"foobar")
   end
 
   test "should be valid" do
@@ -11,7 +11,6 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should name present" do
-    puts(@user.name)
     @user.name =  " "
     assert_not @user.valid?
   end
@@ -33,7 +32,6 @@ class UserTest < ActiveSupport::TestCase
 
   test "email validation should accept valid addresses" do
     valid_addresses = %w[user@example.com USER@foo.COM A_US-ER@foo.bar.org first.last@foo.jp alice+bob@baz.cn]
-    puts(valid_addresses)
     valid_addresses.each do |valid_address|
       @user.email = valid_address
       assert @user.valid?, "#{valid_address.inspect} should be valid"
@@ -50,14 +48,27 @@ class UserTest < ActiveSupport::TestCase
 
   test "email address should be unique" do
     duplicated_user = @user.dup
+    puts(duplicated_user.email)
+    puts(@user.email)
     duplicated_user.email = @user.email.upcase
     @user.save
     assert_not duplicated_user.valid?
   end
 
   test "email addresses should be saved as lowercase" do
-    mixed_case_email = "Foo@ExAMPle.CoM"@user.email = mixed_case_email
+    mixed_case_email = "Foo@ExAMPle.CoM" 
+    @user.email = mixed_case_email
     @user.save
     assert_equal mixed_case_email.downcase, @user.reload.email
+  end
+
+  test "password should be present (nonblank)" do
+    @user.password = @user.password_confirmation = " " * 6
+    assert_not @user.valid?
+  end
+
+  test "password should have a minimum length" do
+    @user.password = @user.password_confirmation = "a" * 5
+    assert_not @user.valid?
   end
 end

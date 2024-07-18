@@ -67,3 +67,5 @@ group :test do
 end
 
 gem 'minitest-reporters', '~> 1.1', '>= 1.1.11'
+
+gem 'bcrypt', '~> 3.1', '>= 3.1.11'

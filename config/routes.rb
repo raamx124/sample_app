@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get "/about",to: "static_pages#about"
   get "/contact", to: "static_pages#contact"
 
+  resources :users
+
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
